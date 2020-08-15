@@ -66,7 +66,7 @@ void FunRand()
     {
         int X = rand()%MAPSIZE + 1 ;
         int Y = rand()%MAPSIZE + 1 ;
-        if (X!= Ux && Y!= Uy)
+        if (X!= Ux && Y!= Uy && rand()%2)
         {
             Map[Y][X] = rand() % 30;
             ADD[Y][X] = -1 ;
