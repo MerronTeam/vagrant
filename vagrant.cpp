@@ -5,7 +5,7 @@ using namespace std ;
 int main()
 {
     Start() ;
-    //Run() ;
-    //End() ;
+    Run() ;
+    End() ;
     return 0 ;
 }
