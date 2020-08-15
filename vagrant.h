@@ -1,23 +1,64 @@
 #include "include.h"
+#include "uphold.h"
+#include <time.h>
 using namespace std ;
 
 void Start() ;
+void Run() ;
 void Login() ;
 void CreateUser() ;
+void print() ;
 bool oper(string, string) ;
+void Set() ;
+void End() ;
+int Finish() ;
+bool quit() ;
+void Help() ;
 
-int num ;
-string UserN ;
+bool Has ;
+
+//in fact, we only need 6x6
+
+bool won ;
+
+string Str ;
+
+void Set(int x)
+{
+    time_t now1 = time(0) ;
+    tm *now = localtime(&now1) ;
+    if (now -> tm_sec - x >= 0.5)
+    {
+        for (int i = 1 ;i <= MAPSIZE ;i ++)
+        {
+            for (int j = 1 ;j <= MAPSIZE ;j ++)
+            {
+                if (Map[i][j])
+                {
+                    Map[i][j] ++ ;
+                }
+            }
+        }
+    }
+}
 
 void Start()
 {
+    system("07") ;
     system("cls") ;
     system("title Vagrant") ;
-    cout << "Already have an account?\n" ;
-    cout << "(Press 1:Log in ;Press 0:Register)\n" ;
+    for (int i = 1 ;i <= MAPSIZE ;i ++)
+    {
+        for (int j = 1 ;j <= MAPSIZE ;j ++)
+        {
+            ADD[i][j] = 0 ;
+        }
+    }
     char per ;
     while(1)
     {
+        cout << "Already have an account?\n" ;
+        cout << "(Press 1:Log in ;Press 0:Register)\n" ;
         per = getch() ;
         if (per == '1' )
         {
@@ -68,46 +109,83 @@ void CreateUser()
         cout << U[i] << endl ;
     }
     fclose(stdout) ;
+    cout << "Please restart.\n" ;
+    getch() ;
+    exit(0) ;
 }
 
 string Un, Uk ;
 
 void Login()
 {
-    while(1)
+    system("cls") ;
+    cout << "Input your username:>" ;
+    cin >> Un ;
+    freopen("data/users.txt", "r", stdin) ;
+    cin >> num ;
+    bool fu = 0 ;
+    string user ;
+    for (int i = 1 ;i <= num ;i ++)
     {
-        Sleep(100) ;
-        system("cls") ;
-        cout << "Input your username:>" ;
-        getline(cin, Un) ;
-        freopen("data/users.txt", "r", stdin) ;
-        cin >> num ;
-        getline(cin, Uk) ;
-        bool fu = 0 ;
-        string user ;
-        for (int i = 1 ;i <= num ;i ++)
+        cin >> user ;
+        if (oper(Un, user))
         {
-            cin >> user ;
-            if (oper(Un, user))
+            fu = 1 ;
+            break ;
+        }
+    }
+    if (fu == 1)
+    {
+        UserN = user ;
+        return ;
+    }
+    else
+    {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED);
+        cout << "Error!Username can't find.\n";
+        getch() ;
+        exit(0) ;
+    }
+    Str = "User/" ;
+    Str += UserN ;
+    Str += ".txt" ;
+    fclose(stdin) ;
+    Sleep(100) ;
+    cout << "Do you want to continue the old game?\n" ;
+    cout << "Press 1 : continue ; Press otherkey : create a new game.\n" ;
+    char cinGet ;
+    cinGet = getch() ;
+    if (freopen(&Str[0], "r", stdin) != NULL && cinGet == '1')
+    {
+        Has = 1 ;
+        int number ;
+        cin >> Ux >> Uy ;
+        cin >> number ;
+        UserSize = number ;
+        for (int i = 1 ;i <= number ;i ++)
+        {
+            cin >> UserP[i].x >> UserP[i].y ;
+        }
+        for (int i = 1 ;i <= MAPSIZE ;i ++)
+        {
+            for (int j = 1 ;j <= MAPSIZE ;j ++)
             {
-                fu = 1 ;
-                break ;
+                cin >> Map[i][j] ;
             }
         }
-        if (fu == 1)
+        for (int i = 1 ;i <= MAPSIZE ;i ++)
         {
-            UserN = user ;
-            return ;
+            for (int j = 1 ;j <= MAPSIZE ;j ++)
+            {
+                cin >> ADD[i][j] ;
+            }
         }
-        else
-        {
-            cout << "Error!Username can't find.\n";
-            cout << "Perss any key to Again\n" ;
-            getch() ;
-        }
-        fclose(stdin) ;
     }
-
+    else if(cinGet == '1')
+    {
+        cout << "Sorry!Your old game is lose!You have to start a new one\n" ;
+    }
+    fclose(stdin) ;
     return ;
 }
 
@@ -122,4 +200,329 @@ bool oper(string a, string b)
         }
     }
     return 1 ;
+}
+
+void Run()
+{
+    Ux = 1 ;
+    Uy = 1 ;
+    Push(Ux, Uy) ;
+    Map[Uy][Ux] = 10 ;
+    ADD[Uy][Ux] = 1 ;
+    NowTime = time(0) ;
+    ltm = localtime(&NowTime);
+    char UserGet ;
+    int Temp ;
+    while(1)
+    {
+        Sleep(200) ;
+        FunRand() ;
+        print() ;
+        UserGet = getch() ;
+        if(UserGet == 'w')
+        {
+            if(Uy > 1 && Map[Uy][Ux] > 1)
+            {
+                Temp = Map[Uy][Ux] - 1;
+                Map[Uy][Ux] = 1 ;
+                Uy -- ;
+                if (ADD[Uy][Ux] == -1)//if it is red
+                {
+                    if(Temp > Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 1 ;
+                        Temp -= Map[Uy][Ux] ;
+                        Temp ++ ;
+                        Map[Uy][Ux] = Temp ;
+                    }
+                    else if(Temp == Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 0 ;
+                        Map[Uy][Ux] = 0 ;
+                        Change() ;
+                    }
+                    else
+                    {
+                        ADD[Uy][Ux] = -1 ;
+                        Map[Uy][Ux] = Map[Uy][Ux] - Temp;
+                        Change() ;
+                    }
+                }
+                else
+                {
+                    Map[Uy][Ux] = Temp + Map[Uy][Ux] ;
+                    ADD[Uy][Ux] = 1 ;
+                }
+                if(OfUser(Ux, Uy) == 0)
+                {
+                    Push(Ux, Uy) ;
+                }
+            }
+        }
+        if(UserGet == 's')
+        {
+            if(Uy < MAPSIZE && Map[Uy][Ux] > 1)
+            {
+                Temp = Map[Uy][Ux] - 1;
+                Map[Uy][Ux] = 1 ;
+                Uy ++ ;
+                if (ADD[Uy][Ux] == -1)//if it is red
+                {
+                    if(Temp > Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 1 ;
+                        Temp -= Map[Uy][Ux] ;
+                        Temp ++ ;
+                        Map[Uy][Ux] = Temp ;
+                    }
+                    else if(Temp == Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 0 ;
+                        Map[Uy][Ux] = 0 ;
+                        Change() ;
+                    }
+                    else
+                    {
+                        ADD[Uy][Ux] = -1 ;
+                        Map[Uy][Ux] = Map[Uy][Ux] - Temp;
+                        Change() ;
+                    }
+                }
+                else
+                {
+                    Map[Uy][Ux] = Temp + Map[Uy][Ux] ;
+                    ADD[Uy][Ux] = 1 ;
+                }
+                if(OfUser(Ux, Uy) == 0)
+                {
+                    Push(Ux, Uy) ;
+                }
+            }
+        }
+        if(UserGet == 'a')
+        {
+            if(Ux > 1 && Map[Uy][Ux] > 1)
+            {
+                Temp = Map[Uy][Ux] - 1;
+                Map[Uy][Ux] = 1 ;
+                Ux -- ;
+                if (ADD[Uy][Ux] == -1)//if it is red
+                {
+                    if(Temp > Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 1 ;
+                        Temp -= Map[Uy][Ux] ;
+                        Temp ++ ;
+                        Map[Uy][Ux] = Temp ;
+                    }
+                    else if(Temp == Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 0 ;
+                        Map[Uy][Ux] = 0 ;
+                        Change() ;
+                    }
+                    else
+                    {
+                        ADD[Uy][Ux] = -1 ;
+                        Map[Uy][Ux] = Map[Uy][Ux] - Temp;
+                        Change() ;
+                    }
+                }
+                else
+                {
+                    Map[Uy][Ux] = Temp + Map[Uy][Ux] ;
+                    ADD[Uy][Ux] = 1 ;
+                }
+                if(OfUser(Ux, Uy) == 0)
+                {
+                    Push(Ux, Uy) ;
+                }
+            }
+        }
+        if(UserGet == 'd')
+        {
+            if(Ux < MAPSIZE && Map[Uy][Ux] > 1)
+            {
+                Temp = Map[Uy][Ux] - 1;
+                Map[Uy][Ux] = 1 ;
+                Ux ++ ;
+                if (ADD[Uy][Ux] == -1)//if it is red
+                {
+                    if(Temp > Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 1 ;
+                        Temp -= Map[Uy][Ux] ;
+                        Temp ++ ;
+                        Map[Uy][Ux] = Temp ;
+                    }
+                    else if(Temp == Map[Uy][Ux])
+                    {
+                        ADD[Uy][Ux] = 0 ;
+                        Map[Uy][Ux] = 0 ;
+                        Change() ;
+                    }
+                    else
+                    {
+                        ADD[Uy][Ux] = -1 ;
+                        Map[Uy][Ux] = Map[Uy][Ux] - Temp;
+                        Change() ;
+                    }
+                }
+                else
+                {
+                    Map[Uy][Ux] = Temp + Map[Uy][Ux] ;
+                    ADD[Uy][Ux] = 1 ;
+                }
+                if(OfUser(Ux, Uy) == 0)
+                {
+                    Push(Ux, Uy) ;
+                }
+            }
+        } 
+        if (UserGet == 'e')
+        {
+            exit(0) ;
+        }
+        if (UserGet == 'p')
+        {
+            getch() ;
+        }
+        if (UserGet == 'h')
+        {
+            Help() ;
+        }
+        Set(ltm -> tm_sec) ;
+        print() ;
+        UpHold() ;
+        if (CheckWinIs())
+        {
+            won = 1 ;
+            return ;
+        }
+        if (CheckLoseIs())
+        {
+            won = 0 ;
+            return ;
+        }
+    }
+}
+
+void Help()
+{
+    system("cls") ;
+    system("type help.txt") ;
+    getch() ;
+}
+
+void print()
+{
+    system("cls") ;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY |
+    FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+    cout << "Your score:" <<setw(5)<< Map[Uy][Ux] << "   Location:(" << Ux << "," << Uy <<")\n" ;
+    cout << "-------------Game-------------\n" ;
+    for (int i = 1 ;i <= MAPSIZE ;i ++)
+    {
+        for (int j = 1 ;j <= MAPSIZE ;j ++)
+        {
+            if(OfUser(j, i)&&ADD[i][j] == 1)
+            {
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY | FOREGROUND_BLUE);
+                cout << setw(5) << Map[i][j] ;
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY |
+                FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); 
+            }
+            else if (ADD[i][j] == -1)
+            {
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY | FOREGROUND_RED);
+                cout << setw(5) << Map[i][j] ;
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY |
+                FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+            }
+            else
+                cout << setw(5) << Map[i][j] ;
+        }
+        cout << "\n\n" ;
+    }
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    cout << "------------------------------\n" ;
+    cout <<"Press h for help.\n" ;
+}
+
+void End()
+{
+    cout << "Stop!Press any key to stop!\n" ;
+    getch() ;
+    system("cls") ;
+    if (won == 1)
+    {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY |
+        FOREGROUND_RED) ;
+        cout << "You win!\n" ;
+        cout << "Your score is " << Finish() ;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7) ;
+    }
+    else
+    {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY |
+        FOREGROUND_GREEN) ;
+        cout << "Sorry!\nYou're lose." ;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7) ;
+    }
+}
+
+int Finish()
+{
+    int ans = 0;
+    for (int i = 1 ;i <= MAPSIZE ;i ++)
+    {
+        for (int j = 1 ;j <= MAPSIZE ;j ++)
+        {
+            ans += Map[i][j] ;
+        }
+    }
+    return ans ;
+}
+
+bool quit()
+{
+    char Get ;
+    system("cls") ;
+    cout << "Yes?You'll quit?\n" ;
+    cout << "Perss 1 to quit and save.\n" ;
+    cout << "Press 2 to quit, but don't save.\n" ;
+    cout << "Press other key to continue(don't quit).\n" ;
+    Get = getch() ;
+    if (Get == '1')
+    {
+        freopen(&Str[0], "w", stdout) ;
+        cout << Ux << ' '<< Uy <<'\n' ; 
+        cout << num << '\n' ;
+        for (int i = 1 ;i <= UserSize ;i ++)
+        {
+            cout << UserP[i].x << ' ' << UserP[i].y ;
+        }
+        for (int i = 1 ;i <= MAPSIZE ;i ++)
+        {
+            for (int j = 1 ;j <= MAPSIZE ;j ++)
+            {
+                cout << Map[i][j] << ' ' ;
+            }
+            cout << endl ;
+        }
+        for (int i = 1 ;i <= MAPSIZE ;i ++)
+        {
+            for (int j = 1 ;j <= MAPSIZE ;j ++)
+            {
+                cout << ADD[i][j] << ' ' ;
+            }
+            cout << endl ;
+        }
+        fclose(stdout) ;
+        return 1 ;
+    }
+    else
+    {
+        return 0 ;
+    }
 }
