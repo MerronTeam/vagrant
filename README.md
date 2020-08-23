@@ -9,7 +9,7 @@ Write on __2020.8__
 
 **I will update it when I am free.**
 
-But I still **sad**.
+But I am still **sad**.
 
 I write this game is not only for me, it is still for my friend, a great helper--**tanrunxi**.
 
