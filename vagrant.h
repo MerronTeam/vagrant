@@ -9,11 +9,13 @@ void Login() ;
 void CreateUser() ;
 void print() ;
 bool oper(string, string) ;
+void GameShow() ;
 void Set() ;
 void End() ;
 int Finish() ;
 bool quit() ;
 void Help() ;
+void UpGame() ;
 
 bool Has ;
 
@@ -22,6 +24,48 @@ bool Has ;
 bool won ;
 
 string Str ;
+
+long long Uscore ;
+
+
+int N ;
+
+struct GF
+{
+    string name ;
+    long long score ;
+} UC[1005] ;
+
+bool cmp(GF a, GF b)
+{
+	return a.score > b.score ;
+}
+
+void UpGame()
+{
+    freopen("game.txt", "r", stdin) ;
+    int n ;
+    cin >> n ;
+    for (int i = 1 ;i <= n ;i ++)
+    {
+        int ak ;
+        cin >> ak ;
+        cin >> UC[i].name >> UC[i].score ;
+        if (UC[i].name == UserN)
+        {
+            UC[i].score = Uscore ;
+        }
+    }
+    fclose(stdin) ;
+    sort(UC + 1, UC + n + 1, cmp) ;
+    freopen("game.txt", "w", stdout) ;
+    cout << n << endl ;
+    for (int i = 1 ;i <= n ;i ++)
+    {
+        cout << i << " " << UC[i].name << " " << UC[i].score << endl ;
+    } 
+    fclose(stdout) ;
+}
 
 void Set(int x)
 {
@@ -103,10 +147,29 @@ void CreateUser()
     U[n + 1] = name ;
     fclose(stdin) ;
     freopen("data/users.txt", "w", stdout) ;
-    cout << n + 1 << endl;
+    n ++ ;
+    cout << n  << endl;
     for (int i = 1 ;i <= n + 1 ;i ++)
     {
         cout << U[i] << endl ;
+    }
+    N = n ;
+    fclose(stdout) ;
+    freopen("game.txt", "r", stdin) ;
+    for (int i = 1 ;i < n ;i ++)
+    {
+        int ak ;
+        cin >> ak ;
+        cin >> UC[i].name >> UC[i].score ;
+    }
+    UC[N].name = name ;
+    UC[N].score = 0 ;
+    fclose(stdin) ;
+    freopen("game.txt", "r", stdout) ;
+    cout << n << endl ;
+    for (int i = 1 ;i <= n ;i ++)
+    {
+        cout << i << " " << UC[i].name << " " << UC[i].score ;
     }
     fclose(stdout) ;
     cout << "Please restart.\n" ;
@@ -391,6 +454,11 @@ void Run()
         {
             Help() ;
         }
+        //UpGame() ;
+        /*if (UserGet == 'g')
+        {
+            GameShow() ;
+        }*/
         Set(ltm -> tm_sec) ;
         print() ;
         UpHold() ;
@@ -419,8 +487,9 @@ void print()
     system("cls") ;
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY |
     FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-    cout << "Your score:" <<setw(5)<< Map[Uy][Ux] << "   Location:(" << Ux << "," << Uy <<")\n" ;
+    cout << "Your score:" <<setw(5)<< Uscore << "   Location:(" << Ux << "," << Uy <<")\n" ;
     cout << "-------------Game-------------\n" ;
+    Uscore = 0 ;
     for (int i = 1 ;i <= MAPSIZE ;i ++)
     {
         for (int j = 1 ;j <= MAPSIZE ;j ++)
@@ -429,6 +498,7 @@ void print()
             {
                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY | FOREGROUND_BLUE);
                 cout << setw(5) << Map[i][j] ;
+                Uscore += Map[i][j] ;
                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_INTENSITY |
                 FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); 
             }
@@ -525,4 +595,11 @@ bool quit()
     {
         return 0 ;
     }
+}
+
+void GameShow()
+{
+    system("cls") ;
+    system("type game.txt") ;
+    getch() ;
 }
