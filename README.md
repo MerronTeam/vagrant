@@ -24,3 +24,7 @@ Have Fun!
 **2020.8**
 
 - I write it.
+
+**2020.8.23**
+- Add the function to compute your score.
+- fix some bugs.
