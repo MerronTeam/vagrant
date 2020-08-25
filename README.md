@@ -28,3 +28,6 @@ Have Fun!
 **2020.8.23**
 - Add the function to compute your score.
 - Fix some bugs.
+
+**2020.8.25**
+- Add the function to set the map's size.
