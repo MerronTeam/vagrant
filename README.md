@@ -21,7 +21,7 @@ Have Fun!
 
 ## UpDate Diary
 
-**2020.8**
+**2020.8.13**
 
 - I write it.
 
