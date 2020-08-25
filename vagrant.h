@@ -16,6 +16,7 @@ int Finish() ;
 bool quit() ;
 void Help() ;
 void UpGame() ;
+void GetSize() ;
 
 bool Has ;
 
@@ -265,8 +266,21 @@ bool oper(string a, string b)
     return 1 ;
 }
 
+void GetSize()
+{
+    system("cls") ;
+    cout << "Input the Map size you want(4-8) :" ;
+    MAPSIZE = getch() - 48;
+    if (!(MAPSIZE >= 4 && MAPSIZE <= 8))
+    {
+        MAPSIZE = 6 ;
+    }
+    system("cls") ;
+}
+
 void Run()
 {
+    GetSize() ;
     Ux = 1 ;
     Uy = 1 ;
     Push(Ux, Uy) ;
