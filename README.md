@@ -27,4 +27,4 @@ Have Fun!
 
 **2020.8.23**
 - Add the function to compute your score.
-- fix some bugs.
+- Fix some bugs.
