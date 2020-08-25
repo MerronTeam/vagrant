@@ -35,7 +35,7 @@ int Map[20][20] ;
 
 int UserSize;
 
-int MAPSIZE = 6 ;
+int MAPSIZE ;
 
 
 void Push(int x, int y)
@@ -66,7 +66,7 @@ void FunRand()
     {
         int X = rand()%MAPSIZE + 1 ;
         int Y = rand()%MAPSIZE + 1 ;
-        if (X!= Ux && Y!= Uy && rand()%2)
+        if (X!= Ux && Y!= Uy && rand() % 2)
         {
             Map[Y][X] = rand() % 30;
             ADD[Y][X] = -1 ;
