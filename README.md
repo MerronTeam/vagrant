@@ -28,6 +28,13 @@ Have Fun!
 **2020.8.23**
 - Add the function to compute your score.
 - Fix some bugs.
+- About 800 lines of code
 
 **2020.8.25**
 - Add the function to set the map's size.
+- About 1,000 of code
+
+**20208.26**
+- Add a mode -- the City War.
+- You can choose the mode.
+- Over 1,100 lines of code.
